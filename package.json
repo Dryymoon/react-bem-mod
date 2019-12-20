@@ -1,0 +1,32 @@
+{
+  "name": "react-bem-mod",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/react-bem-mod.js",
+  "scripts": {
+    "start": "webpack"
+  },
+  "keywords": [
+    "react",
+    "bem",
+    "dryymoon"
+  ],
+  "author": "Pylypenko Igor",
+  "license": "ISC",
+  "peerDependencies": {
+    "react": "^15.0.0,^16.0.0"
+  },
+  "dependencies": {
+    "classnames": "^2.2.6",
+    "lodash": "^4.17.15",
+    "react-display-name": "^0.2.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
+    "@babel/preset-react": "^7.7.4",
+    "babel-loader": "^8.0.6",
+    "webpack": "^4.41.4",
+    "webpack-cli": "^3.3.10"
+  }
+}
