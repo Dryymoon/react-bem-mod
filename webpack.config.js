@@ -9,9 +9,10 @@ config.output = {};
 
 config.output.path = require('path').resolve(__dirname, './dist');
 config.output.filename = 'react-bem-mod.js';
-config.output.library = "reactBemMode";   // Important
+config.output.library = "reactBemMod";   // Important
 config.output.libraryTarget = 'umd';   // Important
 config.output.umdNamedDefine = true;  // Important
+config.output.globalObject = `(typeof self !== 'undefined' ? self : this)`;
 
 config.module = {rules: []};
 config.module.rules.push(
