@@ -1,6 +1,6 @@
 {
   "name": "react-bem-mod",
-  "version": "0.0.2",
+  "version": "1.0.0-beta",
   "description": "",
   "main": "dist/react-bem-mod.js",
   "scripts": {

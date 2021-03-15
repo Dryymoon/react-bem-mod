@@ -100,6 +100,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return bem; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "applyBem", function() { return applyBem; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
@@ -131,7 +133,7 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
@@ -147,178 +149,19 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 var isReact15 = parseInt(react__WEBPACK_IMPORTED_MODULE_0___default.a.version.split('.')[0], 10) === 15;
 var isReact16Plus = parseInt(react__WEBPACK_IMPORTED_MODULE_0___default.a.version.split('.')[0], 10) >= 16;
+function bem(componentOrFunction) {
+  if (componentOrFunction.isReactComponent) return reactClassBemDecorator(componentOrFunction);
+  return reactFunctionBemDecorator(componentOrFunction);
+}
 
-var bemDecorator = function bemDecorator(InnerComponent) {
-  var bemStylesOverride = {};
-
-  var buildBemSelectors = function buildBemSelectors(element, _ref) {
-    var componentProps = _ref.props,
-        maybeBemBlock = _ref.bemBlock,
-        key = _ref.key;
-
-    if (Array.isArray(element)) {
-      return element.map(function (it, i) {
-        return buildBemSelectors(it, {
-          bemBlock: maybeBemBlock,
-          key: i.toString()
-        });
-      });
-    }
-
-    if (element && element.props) {
-      var props = {};
-
-      if (isReact15) {
-        if (key && !element.props.key) props.key = key;
-      }
-
-      if (isReact16Plus) {
-        if (key && !element.key) props.key = key;
-      }
-
-      var classNames = [];
-      var elemIsDataBlock = false;
-      var bemBlock = maybeBemBlock;
-      var bemPrefix = '';
-      var dataBlock = element.props['data-block'];
-
-      if (dataBlock === null) {
-        // Bem style already overrided by bemMod in other elements
-        return element;
-      }
-
-      if (dataBlock && typeof dataBlock === 'string') {
-        bemBlock = dataBlock.trim();
-        elemIsDataBlock = true;
-        props['data-block'] = null;
-        classNames.push(bemBlock);
-      }
-
-      if (!bemBlock) {
-        // eslint-disable-next-line
-        // if (__DEVELOPMENT__) console.error('Error Bem in Element:', element);
-        console.error('Error Bem in Element:', element);
-        throw new Error('Main element must contain block prop, due to Bem metodology');
-      }
-
-      bemPrefix = bemBlock;
-      var dataElem = element.props['data-elem'];
-
-      if (dataElem && typeof dataElem === 'string') {
-        var bemElem = dataElem.trim(); // classNames.push(`${bemBlock}__${bemElem}`);
-
-        props['data-elem'] = null;
-        bemPrefix = "".concat(bemPrefix, "__").concat(bemElem);
-        classNames.push(bemPrefix);
-
-        if (elemIsDataBlock) {
-          // Remove dataBlock className
-          // This is used for insert another datablock tree in existing Block container
-          classNames.shift();
-        }
-      }
-
-      var dataMods = element.props['data-mods'];
-
-      if (dataMods) {
-        classnames__WEBPACK_IMPORTED_MODULE_1___default()(dataMods).split(' ').forEach(function (it) {
-          return it && classNames.push("".concat(bemPrefix, "_").concat(it));
-        }); // props.mods = null;props['data-mods'] = null;
-
-        props['data-mods'] = null;
-      }
-
-      if (element.props.className) classNames.push(element.props.className);
-
-      if (componentProps && componentProps.className) {
-        classNames.push(componentProps.className);
-      }
-      /* if (element.props.classNames) {
-       throw new Error('Element must not contain classNames props, due to Bem metodology');
-       } */
-
-
-      if (componentProps && componentProps['data-bemstyles']) {
-        lodash_extend__WEBPACK_IMPORTED_MODULE_3___default()(bemStylesOverride, componentProps['data-bemstyles']);
-        props['data-bemstyles'] = null;
-      }
-
-      if (InnerComponent.bemstyles) {
-        lodash_extend__WEBPACK_IMPORTED_MODULE_3___default()(bemStylesOverride, InnerComponent.bemstyles);
-      }
-
-      if (element.props['data-bemstyles']) {
-        lodash_extend__WEBPACK_IMPORTED_MODULE_3___default()(bemStylesOverride, element.props['data-bemstyles']);
-        props['data-bemstyles'] = null;
-      } // TODO if construct to increase speed
-
-
-      classNames.forEach(function (it, index) {
-        classNames[index] = bemStylesOverride[it] || classNames[index];
-      });
-      var combinedClasses = classNames.join(' ').trim();
-
-      if (combinedClasses) {
-        props.className = combinedClasses;
-      }
-
-      if (element.props.children) {
-        props.children = buildBemSelectors(element.props.children, {
-          bemBlock: bemBlock
-        });
-      } // if (theme) props['data-theme'] = null;
-
-      /* if (element.props.children) {
-       props.children = Array.isArray(element.props.children)
-       ? element.props.children.map(child => buildBemSelectors(child))
-       : buildBemSelectors(element.props.children);
-       } */
-      // Это заглушка для React 0.15.2, от Дибильного Фейсбука
-      // ... Чтоб он не матерился на неправильные атрибуты в нативных HTML тегах
-      // TODO Проерить эту заглушку или возможно
-      // TODO В проде не делать такой ХАК..., т.е. просто клонировать элемент...
-      // TODO Закомментировали следующий if, т.к. иначе в Image не хочет рабоать @bem
-
-      /* if (dev && typeof element.type === 'string') {
-       const fullProps = objectAssign({}, element.props, props);
-       delete fullProps.block;
-       delete fullProps.elem;
-       delete fullProps.mods;
-       delete fullProps.bemStylesOverride;
-       return createElement(element.type, fullProps);
-       } */
-
-      /* if (typeof element.type === 'string') {
-       console.log('E: ', element);
-       console.log('P: ', props);
-       } c */
-      // Так не работает... материться на наличие левых пропсов в дивах...
-
-      /* eslint-disable */
-
-      /* if (element.props.bemStylesOverride) delete element.props.bemStylesOverride;
-       // if (element.props.block) delete element.props.block;
-       if (element.props.elem) delete element.props.elem;
-       if (element.props.mods) delete element.props.mods; */
-
-      /* if( element.props.bemStylesOverride) element.props.bemStylesOverride = null;
-       if( element.props.block) element.props.block = null;
-       if( element.props.elem) element.props.elem = null;
-       if( element.props.mods) element.props.mods = null; */
-
-      /* eslint-enable */
-
-      /* delete props.block;
-       delete props.elem;
-       delete props.mods;
-       delete props.bemStylesOverride; */
-
-
-      return Object(_clone_referenced_element__WEBPACK_IMPORTED_MODULE_4__["default"])(element, props);
-    }
-
-    return element;
+function reactFunctionBemDecorator(innerFunction) {
+  return function () {
+    return applyBem(innerFunction.apply(void 0, arguments));
   };
+}
+
+function reactClassBemDecorator(InnerComponent) {
+  var bemStylesOverride = {};
 
   var WrappedComponentWithReactBemMod = /*#__PURE__*/function (_InnerComponent) {
     _inherits(WrappedComponentWithReactBemMod, _InnerComponent);
@@ -334,8 +177,9 @@ var bemDecorator = function bemDecorator(InnerComponent) {
     _createClass(WrappedComponentWithReactBemMod, [{
       key: "render",
       value: function render() {
-        return buildBemSelectors(_get(_getPrototypeOf(WrappedComponentWithReactBemMod.prototype), "render", this).call(this), {
-          props: this.props
+        return applyBem(_get(_getPrototypeOf(WrappedComponentWithReactBemMod.prototype), "render", this).call(this), {
+          props: this.props,
+          bemStylesOverride: bemStylesOverride
         });
       }
     }]);
@@ -345,9 +189,136 @@ var bemDecorator = function bemDecorator(InnerComponent) {
 
   WrappedComponentWithReactBemMod.displayName = "bem(".concat(react_display_name__WEBPACK_IMPORTED_MODULE_2___default()(InnerComponent), ")");
   return WrappedComponentWithReactBemMod;
-};
+}
 
-/* harmony default export */ __webpack_exports__["default"] = (bemDecorator);
+function applyBem(element) {
+  var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
+      componentProps = _ref.props,
+      maybeBemBlock = _ref.bemBlock,
+      key = _ref.key,
+      _ref$bemStylesOverrid = _ref.bemStylesOverride,
+      bemStylesOverride = _ref$bemStylesOverrid === void 0 ? {} : _ref$bemStylesOverrid;
+
+  if (Array.isArray(element)) {
+    return element.map(function (it, i) {
+      return applyBem(it, {
+        bemBlock: maybeBemBlock,
+        key: i.toString(),
+        bemStylesOverride: bemStylesOverride
+      });
+    });
+  }
+
+  if (element && element.props) {
+    var props = {};
+    if (isReact15 && key && !element.props.key) props.key = key;
+    if (isReact16Plus && key && !element.key) props.key = key;
+    var classNames = [];
+    var elemIsDataBlock = false;
+    var bemBlock = maybeBemBlock;
+    var bemPrefix = '';
+    var dataBlock;
+    if (dataBlock === undefined) dataBlock = element.props['data-block'];
+    props['data-block'] = null;
+    if (dataBlock === undefined) dataBlock = element.props['bem-block'];
+    props['bem-block'] = null;
+
+    if (dataBlock === null) {
+      // Bem style already overrided by bemMod in other elements
+      return element;
+    }
+
+    if (dataBlock && typeof dataBlock === 'string') {
+      bemBlock = dataBlock.trim();
+      elemIsDataBlock = true;
+      classNames.push(bemBlock);
+    }
+
+    if (!bemBlock) {
+      // eslint-disable-next-line
+      // if (__DEVELOPMENT__) console.error('Error Bem in Element:', element);
+      console.error('Error Bem in Element:', element);
+      throw new Error('Main element must contain block prop, due to Bem metodology');
+    }
+
+    bemPrefix = bemBlock;
+    var dataElem;
+    if (!dataElem) dataElem = element.props['data-elem'];
+    props['data-elem'] = null;
+    if (!dataElem) dataElem = element.props['bem-elem'];
+    props['bem-elem'] = null;
+
+    if (dataElem && typeof dataElem === 'string') {
+      var bemElem = dataElem.trim(); // classNames.push(`${bemBlock}__${bemElem}`);
+
+      bemPrefix = "".concat(bemPrefix, "__").concat(bemElem);
+      classNames.push(bemPrefix);
+
+      if (elemIsDataBlock) {
+        // Remove dataBlock className
+        // This is used for insert another datablock tree in existing Block container
+        classNames.shift();
+      }
+    }
+
+    var dataMods;
+    if (dataMods === undefined) dataMods = element.props['data-mods'];
+    props['data-mods'] = null;
+    if (dataMods === undefined) dataMods = element.props['bem-mods'];
+    props['bem-mods'] = null;
+
+    if (dataMods) {
+      classnames__WEBPACK_IMPORTED_MODULE_1___default()(dataMods).split(' ').forEach(function (it) {
+        return it && classNames.push("".concat(bemPrefix, "_").concat(it));
+      });
+    }
+
+    if (element.props.className) classNames.push(element.props.className);
+    if (componentProps && componentProps.className) classNames.push(componentProps.className);
+
+    if (componentProps && componentProps['data-bemstyles']) {
+      lodash_extend__WEBPACK_IMPORTED_MODULE_3___default()(bemStylesOverride, componentProps['data-bemstyles']);
+      props['data-bemstyles'] = null;
+    }
+    /* if (InnerComponent.bemstyles) {
+      extend(bemStylesOverride, InnerComponent.bemstyles);
+    } */
+
+
+    if (element.props['data-bemstyles']) {
+      lodash_extend__WEBPACK_IMPORTED_MODULE_3___default()(bemStylesOverride, element.props['data-bemstyles']);
+      props['data-bemstyles'] = null;
+    }
+
+    if (element.props['bem-override']) {
+      lodash_extend__WEBPACK_IMPORTED_MODULE_3___default()(bemStylesOverride, element.props['bem-override']);
+      props['bem-override'] = null;
+    }
+
+    if (element.props['bem-modules']) {
+      lodash_extend__WEBPACK_IMPORTED_MODULE_3___default()(bemStylesOverride, element.props['bem-modules']);
+      props['bem-modules'] = null;
+    } // TODO if construct to increase speed
+
+
+    classNames.forEach(function (it, index) {
+      classNames[index] = bemStylesOverride[it] || classNames[index];
+    });
+    var combinedClasses = classNames.join(' ').trim();
+    if (combinedClasses) props.className = combinedClasses;
+
+    if (element.props.children) {
+      props.children = applyBem(element.props.children, {
+        bemBlock: bemBlock,
+        bemStylesOverride: bemStylesOverride
+      });
+    }
+
+    return Object(_clone_referenced_element__WEBPACK_IMPORTED_MODULE_4__["default"])(element, props);
+  }
+
+  return element;
+}
 
 /***/ }),
 /* 1 */
