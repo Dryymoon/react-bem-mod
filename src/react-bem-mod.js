@@ -87,9 +87,9 @@ export function applyBem(element, {
     bemPrefix = bemBlock;
 
     let dataElem;
-    if (!dataElem) dataElem = element.props['data-elem'];
+    if (dataElem===undefined) dataElem = element.props['data-elem'];
     props['data-elem'] = null;
-    if (!dataElem) dataElem = element.props['bem-elem'];
+    if (dataElem===undefined) dataElem = element.props['bem-elem'];
     props['bem-elem'] = null;
 
     if (dataElem && typeof dataElem === 'string') {
@@ -97,7 +97,9 @@ export function applyBem(element, {
       // classNames.push(`${bemBlock}__${bemElem}`);
 
       bemPrefix = `${bemPrefix}__${bemElem}`;
+
       classNames.push(bemPrefix);
+
       if (elemIsDataBlock) {
         // Remove dataBlock className
         // This is used for insert another datablock tree in existing Block container
@@ -106,10 +108,8 @@ export function applyBem(element, {
     }
 
     let dataMods;
-
     if (dataMods === undefined) dataMods = element.props['data-mods'];
     props['data-mods'] = null;
-
     if (dataMods === undefined) dataMods = element.props['bem-mods'];
     props['bem-mods'] = null;
 

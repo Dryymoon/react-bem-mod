@@ -243,9 +243,9 @@ function applyBem(element) {
 
     bemPrefix = bemBlock;
     var dataElem;
-    if (!dataElem) dataElem = element.props['data-elem'];
+    if (dataElem === undefined) dataElem = element.props['data-elem'];
     props['data-elem'] = null;
-    if (!dataElem) dataElem = element.props['bem-elem'];
+    if (dataElem === undefined) dataElem = element.props['bem-elem'];
     props['bem-elem'] = null;
 
     if (dataElem && typeof dataElem === 'string') {
